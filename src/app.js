@@ -60,8 +60,27 @@ if (navigator.geolocation) {
 		});
 };
 
+
+//Get nearby bathrooms
 function getBathrooms(lat, long){
     const url = `https://www.refugerestrooms.org/api/v1/restrooms/by_location?per_page=10&unisex=true&lat=${lat}&lng=${long}`;
     
-    return fetch(url).then(res=>res.json());
+    //returns filtered bathroom object
+    return fetch(url)
+        .then(res=>res.json())
+        .then(bathrooms => bathrooms.map(bathroom => {
+            return {
+                   id: bathroom.id,
+                   name: bathroom.name,
+                   street: bathroom.street,
+                   city: bathroom.city,
+                   state: bathroom.state,
+                   latitude: bathroom.latitude,
+                   longitude: bathroom.longitude,
+                   approved: bathroom.approved,
+                   unisex: bathroom.unisex,
+                   description: bathroom.directions,
+                   comment: bathroom.comment
+            };
+    }));
 }
