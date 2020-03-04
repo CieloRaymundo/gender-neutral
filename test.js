@@ -37,7 +37,7 @@ function initMap(){
             ));
 		});
 }
-
+}
 
 function getBathrooms(lat, long){
     const url = `https://www.refugerestrooms.org/api/v1/restrooms/by_location?per_page=30&unisex=true&lat=${lat}&lng=${long}`;
@@ -60,4 +60,4 @@ function getBathrooms(lat, long){
             };
     }))
 );
-}}
+}
