@@ -25,7 +25,7 @@ function initMap(){
                       lng: long
                   },
                   map: ourMap,
-                  title: 'Bathroom',
+                  title: 'Me',
               });
             
             getBathrooms(lat, long)
