@@ -7,28 +7,24 @@
   <link rel="stylesheet" href="styles/main.css" type="text/css" />
 </head>
 <body>
+  
   <div id="searchInput">
       <b>Start: </b>
       <select id="start">
-        <option value="brooklyn, ny">Brooklyn</option>
-        <option value="san diego, ca">St Louis</option>
         <option value="">Your location</option>
-    
       </select>
       <b>End: </b>
       <select id="end">
-        <option value="chicago, il">Chicago</option>
-        <option value="oklahoma city, ok">Oklahoma City</option>
-        <option value="los angeles, ca">Los Angeles</option>
+        <option value=""></option>
       </select>
   </div>
   
   
   <div id="map"></div>
   
-  
-  <script type="text/javascript" src="test.js"></script>
- <script async defer
+
+  <script type="text/javascript" src="src/app.js"></script>
+  <script async defer
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5jy-9XEclPOh-Z8wrmT3S8SESbkUqit0&callback=initMap">
   </script>
 </body>
