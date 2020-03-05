@@ -1,4 +1,10 @@
+const startTab = document.getElementById('start')
+const endTab = document.getElementById('end')
+
 function initMap(){
+    const directionsService = new google.maps.DirectionsService;
+    const directionsDisplay = new google.maps.DirectionsRenderer;
+    
     if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(position => {
 			console.log('My General Position:', position);
@@ -35,8 +41,18 @@ function initMap(){
                     return newMarker;
                 }
             ));
+            
+            directionsDisplay.setMap(ourMap);
+            const onChangeHandler = function() {
+                calculateAndDisplayRoute(directionsService, directionsDisplay);
+            };
+            startTab.addEventListener('change', onChangeHandler);
+            endTab.addEventListener('change', onChangeHandler); 
 		});
+		
+		
 }
+
 }
 
 function getBathrooms(lat, long){
@@ -60,4 +76,19 @@ function getBathrooms(lat, long){
             };
     }))
 );
+}
+
+function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+    directionsService.route({
+        origin: {lat: 40.6998598, lng: -73.9411056},
+        destination: {lat: 40.697721, lng: -73.935995},
+        travelMode: 'DRIVING'
+    }, function(response, status) {
+        if (status === 'OK') {
+            directionsDisplay.setDirections(response);
+        } else {
+            window.alert('Directions request failed', status);
+            console.log(status)
+        }
+    });
 }
