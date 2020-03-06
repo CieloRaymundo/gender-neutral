@@ -1,62 +1,14 @@
-/*----- constants -----*/
-
-/*  DOM Elements */
-
-
-
-/*------ Classes ------*/
-
-
-class Session {
-    constructor() {
-        this.bathrooms = ['']
-        this.userLocation = {
-            'latitude': 0,
-            'longitude': 0
-        }
-        this.bathroomCount = 0
-    }
-    addMarker(bathroomObj) {
-        this.bathrooms.push(bathroomObj)
-    }
-}
-        /* Test */
- 
-const ourSession = new Session();
-    // console.log(ourSession)
-console.log(ourSession);
-    // console.log(ourSession)
-    
-    
-/*----- app's state -----*/
-    
-console.log("JavaScript is Connected!");
 alert("Never know which bathroom to go in ? Fear no more! There are Gender-Neutral bathroom's everywhere!");
 
-// if (navigator.geolocation) {
-// 		navigator.geolocation.getCurrentPosition(position => {
-// 			console.log('My General Position:', position);
-// 			const long = position.coords.longitude;
-// 			const lat = position.coords.latitude;
-			
-// 			initMap(lat, long);
-// 		});
-// }
-
-/*----- functions -----*/
-
-function initMap(lat, lng){
+function initMap(){
     if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(position => {
 			console.log('My General Position:', position);
 			const long = position.coords.longitude;
 			const lat = position.coords.latitude;
 			
-			const startTab = document.getElementById('start') // Delete from global space eventually
-            const endTab = document.getElementById('end')
-			
 			const directionsRenderer = new google.maps.DirectionsRenderer;
-            const directionsService = new google.maps.DirectionsService;
+             
 			
 			console.log(lat, long);
 			
@@ -75,8 +27,6 @@ function initMap(lat, lng){
                   title: 'Me',
               });
             
-            const markers = [];
-            
             getBathrooms(lat, long)
                 .then(bathrooms => bathrooms.forEach(bathroom => {
                     const newMarker = new google.maps.Marker({
@@ -87,22 +37,42 @@ function initMap(lat, lng){
                         map: ourMap,
                         title: bathroom.description + bathroom.comment,
                     });
-                    markers.push(newMarker);
                     return newMarker;
                 }
              ));
+             
+             
+            getBathrooms(lat, long)
+                .then(bathrooms => bathrooms.forEach(bathroom => {
+                    const endSec = document.getElementById('end');
+                    const  newOption = document.createElement('option');
+                    
+                    reverseGeocoding(bathroom.latitude, bathroom.longitude)
+                        .then(name => name.split(','))
+                        .then(address => {
+                            newOption.value = address[0] + address[1] + address[2];
+                            newOption.innerText = address[0] + address[1];
+                        });
+                    
+                    endSec.appendChild(newOption);
+                }
+             ));
             
-            for(let i = 0; i < markers.length; i++){
-                markers[i].addListener('click',calculateAndDisplayRoute(directionsService, directionsRenderer,{lat: lat, lng:long} ,{lat:markers[i].latitude, lng:markers[i].longitude}));
-            }
             
             reverseGeocoding(lat, long)
                 .then(name => name.split(','))
                 .then(address => {
+                    const startTab = document.getElementById('start');
                     startTab.options[0].text = address[0] + address[1];
+                    startTab.options[0].value =  address[0] + address[1] + address[2];
                 });
             
+            const onChangeHandler = function() {
+                calculateAndDisplayRoute(directionsService, directionsRenderer);
+            };
             
+            document.getElementById('start').addEventListener('change', onChangeHandler);
+            document.getElementById('end').addEventListener('change', onChangeHandler);
 		});
     }
 }
@@ -130,10 +100,10 @@ function getBathrooms(lat, long){
     ));
 }
 
-function calculateAndDisplayRoute(directionsService, directionsRenderer, origin, destination) {
+function calculateAndDisplayRoute(directionsService, directionsRenderer) {
     directionsService.route({
-        origin: origin,
-        destination: destination,
+        origin: document.getElementById('start').value,
+        destination: document.getElementById('end').value,
         travelMode: 'WALKING'
     }, function(response, status) {
         if (status === 'OK') {
@@ -145,12 +115,7 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer, origin,
     });
 } 
 
-    /*  Function Delcarations  -->  News + Relevant Info  */
 
-
-let searchInput = document.getElementById("");
-
-/* Reverse Geocoding API */
 function reverseGeocoding(lat, lng) {
     const locationiqApiKey = "48447f262ef7c7";
     
