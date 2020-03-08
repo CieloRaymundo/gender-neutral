@@ -5,21 +5,30 @@
   <meta charset="utf-8">
   <title>Bathroom Neutrality</title>
   <link rel="stylesheet" href="styles/main.css" type="text/css" />
+  <link href="https://fonts.googleapis.com/css?family=Baloo+2&display=swap" rel="stylesheet">
 </head>
 <body>
+  <section class="head">
+    <h1>Find My Bathroom</h1>
+  </section>
   
-  <div id="searchInput">
+  <section class="about">
+    <h2>About: </h2>
+    <p>Find My Bathroom is an app designed for anyone who is looking for a bathroom no matter where they are. This app is specially built for those who are non-binary and can never seem to find the right restroom for them.</p>
+  </section>
+  
+  <section class="map-sec">
+    <section id="searchInput">
       <b>Start: </b>
       <select id="start">
         <option value="">Your location</option>
       </select>
       <b>End: </b>
       <select id="end"></select>
-  </div>
-  
-  
-  <div id="map"></div>
-  
+    </section>
+    
+    <section id="map"></section>
+  </section>
 
   <script type="text/javascript" src="src/app.js"></script>
   <script async defer

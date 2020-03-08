@@ -1,4 +1,4 @@
-alert("Never know which bathroom to go in ? Fear no more! There are Gender-Neutral bathroom's everywhere!");
+//alert("Never know which bathroom to go in ? Fear no more! There are Gender-Neutral bathroom's everywhere!");
 
 function initMap(){
     if (navigator.geolocation) {
@@ -8,6 +8,7 @@ function initMap(){
 			const lat = position.coords.latitude;
 			
 			const directionsRenderer = new google.maps.DirectionsRenderer;
+			const directionsService = new google.maps.DirectionsService;
              
 			
 			console.log(lat, long);
@@ -26,6 +27,16 @@ function initMap(){
                   map: ourMap,
                   title: 'Me',
               });
+            userMarker.addListener('click', toggleBounce);
+            
+            function toggleBounce() {
+              if (userMarker.getAnimation() !== null) {
+                userMarker.setAnimation(null);
+              } else {
+                userMarker.setAnimation(google.maps.Animation.BOUNCE);
+              }
+              console.log(userMarker)
+            }
             
             getBathrooms(lat, long)
                 .then(bathrooms => bathrooms.forEach(bathroom => {
@@ -35,6 +46,7 @@ function initMap(){
                            lng: bathroom.longitude,
                         },
                         map: ourMap,
+                        animation: google.maps.Animation.DROP,
                         title: bathroom.description + bathroom.comment,
                     });
                     return newMarker;
@@ -42,21 +54,20 @@ function initMap(){
              ));
              
              
-            getBathrooms(lat, long)
-                .then(bathrooms => bathrooms.forEach(bathroom => {
-                    const endSec = document.getElementById('end');
-                    const  newOption = document.createElement('option');
+            // getBathrooms(lat, long)
+            //     .then(bathrooms => bathrooms.forEach(bathroom => {
+            //         const endSec = document.getElementById('end');
+            //         const newOption = document.createElement('option');
                     
-                    reverseGeocoding(bathroom.latitude, bathroom.longitude)
-                        .then(name => name.split(','))
-                        .then(address => {
-                            newOption.value = address[0] + address[1] + address[2];
-                            newOption.innerText = address[0] + address[1];
-                        });
-                    
-                    endSec.appendChild(newOption);
-                }
-             ));
+            //         reverseGeocoding(bathroom.latitude, bathroom.longitude)
+            //             .then(name => name.split(','))
+            //             .then(address => {
+            //                 newOption.value = address[0] + address[1] + address[2];
+            //                 newOption.innerText = address[0] + address[1];
+            //                 endSec.appendChild(newOption);
+            //             })
+            //     }
+            //  ));
             
             
             reverseGeocoding(lat, long)
@@ -78,7 +89,7 @@ function initMap(){
 }
 
 function getBathrooms(lat, long){
-    const url = `https://www.refugerestrooms.org/api/v1/restrooms/by_location?per_page=30&unisex=true&lat=${lat}&lng=${long}`;
+    const url = `https://www.refugerestrooms.org/api/v1/restrooms/by_location?per_page=10&unisex=true&lat=${lat}&lng=${long}`;
     
     return (fetch(url)
         .then(res=>res.json())
@@ -97,7 +108,10 @@ function getBathrooms(lat, long){
                   comment: bathroom.comment
                 };
             })
-    ));
+    )).then(res => {
+        console.log(res)
+        return res
+    });
 }
 
 function calculateAndDisplayRoute(directionsService, directionsRenderer) {
