@@ -39,7 +39,7 @@ function initMap(){
             }
             
             getBathrooms(lat, long)
-                .then(bathrooms => bathrooms.forEach(bathroom => {
+                .then(bathrooms => bathrooms.map(bathroom => {
                     const newMarker = new google.maps.Marker({
                         position: {
                            lat: bathroom.latitude,
@@ -49,26 +49,11 @@ function initMap(){
                         animation: google.maps.Animation.DROP,
                         title: bathroom.description + bathroom.comment,
                     });
+                    console.log(newMarker);
                     return newMarker;
                 }
              ));
              
-             
-            // getBathrooms(lat, long)
-            //     .then(bathrooms => bathrooms.forEach(bathroom => {
-            //         const endSec = document.getElementById('end');
-            //         const newOption = document.createElement('option');
-                    
-            //         reverseGeocoding(bathroom.latitude, bathroom.longitude)
-            //             .then(name => name.split(','))
-            //             .then(address => {
-            //                 newOption.value = address[0] + address[1] + address[2];
-            //                 newOption.innerText = address[0] + address[1];
-            //                 endSec.appendChild(newOption);
-            //             })
-            //     }
-            //  ));
-            
             
             reverseGeocoding(lat, long)
                 .then(name => name.split(','))
@@ -89,10 +74,10 @@ function initMap(){
 }
 
 function getBathrooms(lat, long){
-    const url = `https://www.refugerestrooms.org/api/v1/restrooms/by_location?per_page=10&unisex=true&lat=${lat}&lng=${long}`;
+    const url = `https://www.refugerestrooms.org/api/v1/restrooms/by_location?per_page=30&unisex=true&lat=${lat}&lng=${long}`;
     
     return (fetch(url)
-        .then(res=>res.json())
+        .then(res => res.json())
         .then(bathrooms => bathrooms.map(bathroom => {
             return {
                   id: bathroom.id,
@@ -108,10 +93,7 @@ function getBathrooms(lat, long){
                   comment: bathroom.comment
                 };
             })
-    )).then(res => {
-        console.log(res)
-        return res
-    });
+    ));
 }
 
 function calculateAndDisplayRoute(directionsService, directionsRenderer) {
@@ -124,7 +106,7 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer) {
             directionsRenderer.setDirections(response);
         } else {
             window.alert('Directions request failed', status);
-            console.log(status)
+            console.log(status);
         }
     });
 } 
